@@ -1,0 +1,17 @@
+{
+  "name": "@mini-vue/vue",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "serve": "serve ."
+  },
+  "type": "module",
+  "dependencies": {
+    "@mini-vue/shared": "workspace:*",
+    "@mini-vue/compiler-dom": "workspace:*"
+  },
+  "devDependencies": {
+    "cypress": "^11.0.1",
+    "serve": "^14.1.1"
+  }
+}
