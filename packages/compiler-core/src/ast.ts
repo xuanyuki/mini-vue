@@ -1,3 +1,5 @@
+import { CREATE_ELEMENT_VNODE } from "./runtimeHelpers";
+
 export const enum NodeTypes {
   // 文本节点
   TEXT,
@@ -33,4 +35,20 @@ export function createRoot(children: [], source = "") {
 
 export const enum ElementTypes {
   ELEMENT,
+}
+
+/**
+ * 注册运行时 helper
+ */
+export function createVNodeCall(context, tag, props?, children?) {
+  if (context) {
+    context.helper(CREATE_ELEMENT_VNODE);
+  }
+
+  return {
+    type: NodeTypes.ELEMENT,
+    tag,
+    props,
+    children,
+  };
 }

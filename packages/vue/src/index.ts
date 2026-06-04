@@ -29,3 +29,5 @@ function compileToFunction(template: string | HTMLElement, options: any) {
   const render = new Function("Vue", code);
   return render;
 }
+
+registerRuntimeCompiler(compileToFunction);
