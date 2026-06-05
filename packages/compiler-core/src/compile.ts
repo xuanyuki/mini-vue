@@ -3,6 +3,8 @@ import { baseParse } from "./parser";
 import { transform } from "./transform";
 import { transformElement } from "./transforms/transformElement";
 import { transformText } from "./transforms/transformText";
+import { transformExpression } from "./transforms/transformExpression";
+import { generate } from "./codegen";
 
 export function baseCompile(source: string, options: any) {
   // 解析 template 字符串为ast树
@@ -14,4 +16,6 @@ export function baseCompile(source: string, options: any) {
       nodeTransforms: [transformElement, transformText, transformExpression],
     }),
   );
+
+  return generate(ast);
 }
