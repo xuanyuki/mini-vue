@@ -1,0 +1,1 @@
+export { registerRuntimeCompiler } from "./components";

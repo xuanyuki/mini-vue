@@ -43,12 +43,35 @@ importers:
         specifier: ^0.22.1
         version: 0.22.1
 
+  packages/compiler-core: {}
+
+  packages/runtime-core:
+    dependencies:
+      '@mini-vue/shared':
+        specifier: workspace:^1.0.0
+        version: link:../shared
+
+  packages/runtime-dom:
+    dependencies:
+      '@mini-vue/runtime-core':
+        specifier: workspace:^1.0.0
+        version: link:../runtime-core
+      '@mini-vue/shared':
+        specifier: workspace:^1.0.0
+        version: link:../shared
+
   packages/shared: {}
 
   packages/vue:
     dependencies:
+      '@mini-vue/runtime-core':
+        specifier: workspace:*
+        version: link:../runtime-core
+      '@mini-vue/runtime-dom':
+        specifier: workspace:*
+        version: link:../runtime-dom
       '@mini-vue/shared':
-        specifier: workspace:^1.0.0
+        specifier: workspace:*
         version: link:../shared
     devDependencies:
       cypress:

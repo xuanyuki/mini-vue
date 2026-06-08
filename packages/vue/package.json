@@ -7,8 +7,9 @@
   },
   "type": "module",
   "dependencies": {
-    "@mini-vue/shared": "workspace:*",
-    "@mini-vue/compiler-dom": "workspace:*"
+    "@mini-vue/runtime-core": "workspace:*",
+    "@mini-vue/runtime-dom": "workspace:*",
+    "@mini-vue/shared": "workspace:*"
   },
   "devDependencies": {
     "cypress": "^11.0.1",

@@ -1,5 +1,7 @@
+import * as runtimeDom from "@mini-vue/runtime-dom";
 import { baseCompile } from "@mini-vue/compiler-core";
 import { extend, isString, NOOP } from "@mini-vue/shared";
+import { registerRuntimeCompiler } from "@mini-vue/runtime-core";
 
 function compileToFunction(template: string | HTMLElement, options: any) {
   // 当template是HTMLElement时，需要将HTMLElement转换为字符串
@@ -24,9 +26,10 @@ function compileToFunction(template: string | HTMLElement, options: any) {
     opts.isCustomElement = (tag) => !!customElements.get(tag);
   }
 
+  // code: ast树编译后的js代码
   const { code } = baseCompile(template, opts);
 
-  const render = new Function("Vue", code);
+  const render = new Function("Vue", code)(runtimeDom);
   return render;
 }
 

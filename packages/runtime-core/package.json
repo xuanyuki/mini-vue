@@ -1,0 +1,8 @@
+{
+  "name": "@mini-vue/runtime-core",
+  "version": "1.0.0",
+  "description": "@mini-vue/runtime-core",
+  "dependencies": {
+    "@mini-vue/shared": "workspace:^1.0.0"
+  }
+}

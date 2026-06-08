@@ -1,9 +1,17 @@
+import { isString } from "@mini-vue/shared";
 import { NodeTypes } from "./ast";
-import { helperNameMap, TO_DISPLAY_STRING } from "./runtimeHelpers";
+import {
+  CREATE_ELEMENT_VNODE,
+  helperNameMap,
+  TO_DISPLAY_STRING,
+} from "./runtimeHelpers";
 
+/**
+ * 根据ast树生成render函数的代码
+ */
 export function generate(ast, options = {}) {
   const context = createCodegenContext(ast, options);
-  const { push, mode, newline, indent, deindent } = context;
+  const { push, mode, deindent } = context;
 
   if (mode === "module") {
     // module 模式下生成 import 风格的导入语句
@@ -79,6 +87,73 @@ function genNode(node: any, context: any) {
   }
 }
 
+/** 解析复合表达式节点（复合表达式由 文本节点 + 插值节点组成） */
+function genCompoundExpression(node: any, context: any) {
+  const { push } = context;
+  for (let i = 0; i < node.children.length; i++) {
+    const child = node.children[i];
+    if (isString(child)) {
+      push(child);
+    } else {
+      genNode(child, context);
+    }
+  }
+}
+
+/** 解析文本节点 */
+function genText(node: any, context: any) {
+  const { push } = context;
+  push(`'${node.content}'`);
+}
+
+/** 为单个元素节点生成 CREATE_ELEMENT_VNODE 的调用代码 */
+function genElement(node, context) {
+  const { push, helper } = context;
+  const { tag, props, children } = node;
+  // 插入运行时函数 CREATE_ELEMENT_VNODE 的调用
+  push(`${helper(CREATE_ELEMENT_VNODE)}(`);
+
+  genNodeList(genNullableArgs([tag, props, children]), context);
+
+  push(`)`);
+}
+
+/** 递归解析ast树，将参数直接加入代码，然后继续解析子结构 */
+function genNodeList(nodes: any, context: any) {
+  const { push } = context;
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+    if (isString(node)) {
+      push(`${node}`);
+    } else {
+      genNode(node, context);
+    }
+    if (i < nodes.length - 1) {
+      push(", ");
+    }
+  }
+}
+
+/**
+ * 处理参数， 将尾部空的去除，中间为 falsy 的值设为 null
+ * @returns string[]
+ */
+function genNullableArgs(args) {
+  let i = args.length;
+  // 从后往前去掉 null 值的参数
+  while (i--) {
+    if (args[i] != null) break;
+  }
+  // 将中间参数为 falsy 的值设为 null
+  return args.slice(0, i + 1).map((arg) => arg || "null");
+}
+
+/** 对于简单表达式节点直接插入到生成的代码中 */
+function genExpression(node: any, context: any) {
+  context.push(node.content, node);
+}
+
+/** 递归解析插值节点并插入运行时函数调用 */
 function genInterpolation(node: any, context: any) {
   const { push, helper } = context;
   push(`${helper(TO_DISPLAY_STRING)}(`);
